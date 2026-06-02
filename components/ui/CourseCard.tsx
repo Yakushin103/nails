@@ -13,10 +13,10 @@ interface CourseCardProps {
   title: string;
   description: string;
   price: number;
-  salePrice?: number;
-  image?: string;
+  salePrice?: number | null;  // Исправлено: добавлен null
+  image?: string | null;       // Исправлено: добавлен null
   category: string;
-  rating?: number;
+  rating?: number | null;      // Исправлено: добавлен null
 }
 
 export default function CourseCard({
@@ -33,12 +33,10 @@ export default function CourseCard({
   const hasDiscount = salePrice && salePrice < price;
   const discountPercent = hasDiscount ? Math.round(((price - salePrice!) / price) * 100) : 0;
 
-  // Используем useEffect чтобы избежать гидратации
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Базовое форматирование без toLocaleString
   const formatPrice = (value: number) => {
     return Math.round(value).toString();
   };
@@ -83,7 +81,7 @@ export default function CourseCard({
         <div className="flex items-center gap-2 mb-2">
           <div className="flex text-yellow-400">
             <Star className="w-4 h-4 fill-current" />
-            <span className="text-sm text-gray-600 ml-1">{rating}</span>
+            <span className="text-sm text-gray-600 ml-1">{rating || 4.8}</span>
           </div>
         </div>
 

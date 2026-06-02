@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "seed": "node scripts/seed.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -46,6 +47,7 @@
     "eslint-config-next": "16.2.7",
     "postcss": "8.4.31",
     "tailwindcss": "3.4.17",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

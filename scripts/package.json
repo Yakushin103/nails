@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "seed": "node seed.js"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "ts-node": "^10.9.2"
+  }
+}

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64", "darwin"]
 }
 
 datasource db {
@@ -27,17 +28,29 @@ model Course {
   slug        String    @unique
   title       String
   description String
+  longDescription String?
   price       Int
   salePrice   Int?
   image       String?
   videoUrl    String?
-  duration    Int?
+  previewVideo String?
+  duration    String?
+  lessons     Int?
+  students    Int?      @default(0)
+  rating      Float?    @default(0)
+  level       String?
+  language    String?   @default("Русский")
+  certificate Boolean   @default(true)
   category    String
   isActive    Boolean   @default(true)
   sortOrder   Int       @default(0)
+  whatYouWillLearn String?  // JSON string
+  program     String?   // JSON string
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   
-  lessons     Lesson[]
-  purchases   Purchase[]
+  lessonsList   Lesson[]
+  purchases     Purchase[]
 }
 
 model Lesson {
@@ -46,7 +59,7 @@ model Lesson {
   title       String
   description String?
   videoUrl    String
-  duration    Int?
+  duration    String?
   sortOrder   Int       @default(0)
   
   course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)

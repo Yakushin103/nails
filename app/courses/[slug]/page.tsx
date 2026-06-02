@@ -1,17 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Video from 'next-video';
 import {
   Play,
   Clock,
   Star,
-  Users,
   Award,
-  ChevronRight,
   CheckCircle,
   FileText,
   Video as VideoIcon,
@@ -24,61 +21,91 @@ import {
 import Button from '@/components/ui/Button';
 import Reviews from '@/components/Course/Reviews';
 
-// Временные данные (позже из БД)
-const courseData = {
-  id: '1',
-  title: 'Комбинированный маникюр',
-  description: 'Полный курс по комбинированной технике маникюра, который научит вас создавать идеальные ногти быстро и качественно',
-  longDescription: `
-    Комбинированный маникюр — это современная техника, сочетающая аппаратный и обрезной методы. 
-    Вы научитесь работать с разными типами кутикулы, подбирать инструменты и создавать безупречный результат.
-    
-    Курс подойдет как новичкам, так и опытным мастерам, желающим расширить свои навыки.
-  `,
-  price: 1990,
-  salePrice: 1290,
-  duration: '5 часов',
-  lessons: 24,
-  students: 1247,
-  rating: 4.9,
-  level: 'Для начинающих и опытных',
-  language: 'Русский',
-  certificate: true,
-  previewVideo: '/videos/preview.mp4', // Видео для next-video
-  image: '/courses/manicure-1.jpg',
-  whatYouWillLearn: [
-    'Теория строения ногтей и кутикулы',
-    'Выбор инструментов и оборудования',
-    'Техника безопасности и санитарные нормы',
-    'Пошаговый алгоритм комбинированного маникюра',
-    'Работа с разными типами кутикулы',
-    'Частые ошибки и как их избежать',
-    'Практические советы от эксперта'
-  ],
-  program: [
-    { title: 'Введение в курс', duration: '15 мин' },
-    { title: 'Анатомия ногтевой пластины', duration: '30 мин' },
-    { title: 'Выбор инструментов', duration: '25 мин' },
-    { title: 'Подготовка к работе', duration: '20 мин' },
-    { title: 'Техника комбинированного маникюра', duration: '2 часа' },
-    { title: 'Работа с разными типами кутикулы', duration: '45 мин' },
-    { title: 'Финальная отделка и покрытие', duration: '30 мин' },
-    { title: 'Разбор ошибок и советы', duration: '25 мин' }
-  ]
-};
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  longDescription: string;
+  price: number;
+  salePrice: number | null;
+  duration: string | null;
+  lessons: number | null;
+  students: number | null;
+  rating: number | null;
+  level: string | null;
+  language: string;
+  certificate: boolean;
+  previewVideo: string | null;
+  image: string | null;
+  whatYouWillLearn: string;
+  program: string;
+  category: string;
+}
 
 export default function CoursePage() {
   const params = useParams();
+  const slug = params.slug as string;
+
+  const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview'); // overview, program, reviews
+  const [activeTab, setActiveTab] = useState('overview');
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const hasDiscount = courseData.salePrice && courseData.salePrice < courseData.price;
-  const discountPercent = hasDiscount ? Math.round(((courseData.price - courseData.salePrice!) / courseData.price) * 100) : 0;
+  useEffect(() => {
+    fetchCourse();
+  }, [slug]);
+
+  const fetchCourse = async () => {
+    try {
+      const response = await fetch(`/api/courses/${slug}`);
+      const data = await response.json();
+      if (data.success) {
+        setCourse(data.course);
+      } else {
+        setError('Курс не найден');
+      }
+    } catch (error) {
+      setError('Ошибка загрузки курса');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Загрузка курса...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !course) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600">{error || 'Курс не найден'}</p>
+          <a href="/courses" className="mt-4 inline-block text-gold-600 hover:underline">
+            Вернуться к курсам
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  const hasDiscount = course.salePrice && course.salePrice < course.price;
+  const discountPercent = hasDiscount ? Math.round(((course.price - course.salePrice!) / course.price) * 100) : 0;
+
+  const whatYouWillLearn = course.whatYouWillLearn ? JSON.parse(course.whatYouWillLearn) : [];
+  const program = course.program ? JSON.parse(course.program) : [];
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Hero Section with Video */}
+      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white">
         <div className="container mx-auto px-4 py-12 lg:py-16">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -90,7 +117,7 @@ export default function CoursePage() {
             >
               <div className="aspect-video bg-black">
                 <Video
-                  src={courseData.previewVideo}
+                  src={course.previewVideo || '/videos/preview.mp4'}
                   controls={true}
                   className="w-full h-full"
                   onPlay={() => setIsPlaying(true)}
@@ -107,26 +134,26 @@ export default function CoursePage() {
             >
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="bg-gold-500 text-primary-900 px-3 py-1 rounded-full text-sm font-semibold">
-                  ТОП курс
+                  {course.category}
                 </span>
                 <div className="flex items-center gap-1">
                   <Star className="w-5 h-5 fill-gold-500 text-gold-500" />
-                  <span className="font-semibold">{courseData.rating}</span>
-                  <span className="text-gray-300">({courseData.students} учеников)</span>
+                  <span className="font-semibold">{course.rating || 4.9}</span>
+                  <span className="text-gray-300">({course.students || 0} учеников)</span>
                 </div>
               </div>
 
-              <h1 className="text-4xl lg:text-5xl font-bold">{courseData.title}</h1>
-              <p className="text-lg text-gray-200">{courseData.description}</p>
+              <h1 className="text-4xl lg:text-5xl font-bold">{course.title}</h1>
+              <p className="text-lg text-gray-200">{course.description}</p>
 
               <div className="flex flex-wrap gap-4 text-sm">
                 <div className="flex items-center gap-2">
                   <Clock className="w-5 h-5" />
-                  <span>{courseData.duration}</span>
+                  <span>{course.duration || '5 часов'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <FileText className="w-5 h-5" />
-                  <span>{courseData.lessons} уроков</span>
+                  <span>{course.lessons || 24} уроков</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Award className="w-5 h-5" />
@@ -140,10 +167,10 @@ export default function CoursePage() {
                   {hasDiscount ? (
                     <>
                       <div className="text-4xl font-bold text-gold-500">
-                        {courseData.salePrice?.toLocaleString()} ₽
+                        {course.salePrice?.toLocaleString()} ₽
                       </div>
                       <div className="text-lg text-gray-300 line-through">
-                        {courseData.price.toLocaleString()} ₽
+                        {course.price.toLocaleString()} ₽
                       </div>
                       <div className="text-green-400 font-semibold mt-1">
                         Экономия {discountPercent}%
@@ -151,7 +178,7 @@ export default function CoursePage() {
                     </>
                   ) : (
                     <div className="text-4xl font-bold text-gold-500">
-                      {courseData.price.toLocaleString()} ₽
+                      {course.price.toLocaleString()} ₽
                     </div>
                   )}
                 </div>
@@ -229,21 +256,19 @@ export default function CoursePage() {
                   animate={{ opacity: 1 }}
                   className="space-y-8"
                 >
-                  {/* Description */}
                   <div className="bg-white rounded-2xl p-6 shadow-sm">
                     <h2 className="text-2xl font-bold mb-4">О курсе</h2>
                     <div className="prose max-w-none text-gray-600">
-                      {courseData.longDescription.split('\n').map((para, i) => (
+                      {course.longDescription?.split('\n').map((para, i) => (
                         <p key={i} className="mb-4">{para}</p>
                       ))}
                     </div>
                   </div>
 
-                  {/* What you'll learn */}
                   <div className="bg-white rounded-2xl p-6 shadow-sm">
                     <h2 className="text-2xl font-bold mb-4">Чему вы научитесь</h2>
                     <div className="grid md:grid-cols-2 gap-3">
-                      {courseData.whatYouWillLearn.map((item, i) => (
+                      {whatYouWillLearn.map((item: string, i: number) => (
                         <div key={i} className="flex items-start gap-2">
                           <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                           <span>{item}</span>
@@ -252,14 +277,13 @@ export default function CoursePage() {
                     </div>
                   </div>
 
-                  {/* Features */}
                   <div className="bg-gradient-to-r from-primary-50 to-gold-50 rounded-2xl p-6">
                     <h3 className="text-xl font-bold mb-4">Что входит в курс</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center gap-3">
                         <VideoIcon className="w-6 h-6 text-gold-600" />
                         <div>
-                          <div className="font-semibold">{courseData.lessons} уроков</div>
+                          <div className="font-semibold">{course.lessons} уроков</div>
                           <div className="text-sm text-gray-600">Видео материалы</div>
                         </div>
                       </div>
@@ -297,10 +321,10 @@ export default function CoursePage() {
                 >
                   <div className="p-6 border-b">
                     <h2 className="text-2xl font-bold">Программа курса</h2>
-                    <p className="text-gray-600 mt-1">{courseData.lessons} уроков • {courseData.duration}</p>
+                    <p className="text-gray-600 mt-1">{course.lessons} уроков • {course.duration}</p>
                   </div>
                   <div className="divide-y">
-                    {courseData.program.map((lesson, i) => (
+                    {program.map((lesson: { title: string; duration: string }, i: number) => (
                       <div key={i} className="p-6 hover:bg-gray-50 transition-colors">
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-3">
@@ -320,7 +344,6 @@ export default function CoursePage() {
 
             {/* Sidebar */}
             <div className="space-y-6">
-              {/* Teacher Info */}
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h3 className="font-bold mb-4">Преподаватель</h3>
                 <div className="flex items-center gap-4">
@@ -334,7 +357,6 @@ export default function CoursePage() {
                 </div>
               </div>
 
-              {/* Includes */}
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h3 className="font-bold mb-4">В курс входит</h3>
                 <div className="space-y-3">
@@ -357,7 +379,6 @@ export default function CoursePage() {
                 </div>
               </div>
 
-              {/* Guarantee */}
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 text-center">
                 <Award className="w-12 h-12 text-green-600 mx-auto mb-3" />
                 <h3 className="font-bold mb-2">Гарантия качества</h3>

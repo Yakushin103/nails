@@ -5,234 +5,83 @@ import { motion } from 'framer-motion';
 import { Search, Filter } from 'lucide-react';
 import CourseCard from '@/components/ui/CourseCard';
 
-// Данные курсов
-const allCourses = [
-  {
-    id: '1',
-    slug: 'kombinirovanniy-manikyur',
-    title: 'Комбинированный маникюр',
-    description: 'Курс по комбинированной технике маникюра, которой должен владеть каждый мастер',
-    price: 1990,
-    salePrice: 1290,
-    category: 'Маникюр',
-    image: '/courses/manicure-1.jpg'
-  },
-  {
-    id: '2',
-    slug: 'apparatniy-manikyur',
-    title: 'Аппаратный маникюр',
-    description: 'Освой технику аппаратного маникюра без использования режущих инструментов',
-    price: 2690,
-    salePrice: 1690,
-    category: 'Маникюр',
-    image: '/courses/manicure-2.jpg'
-  },
-  {
-    id: '3',
-    slug: 'pilochiy-manikyur',
-    title: 'Пилочный маникюр',
-    description: 'Научись выполнять чистый, долговечный и безопасный маникюр без использования режущего инструмента и фрез',
-    price: 3890,
-    salePrice: 2990,
-    category: 'Маникюр',
-    image: '/courses/pilochiy.jpg'
-  },
-  {
-    id: '4',
-    slug: 'ukreplenie-nogtey',
-    title: 'Укрепление ногтей',
-    description: 'Научись укреплению ногтей гелем для создания прочного и эстетичного покрытия',
-    price: 2190,
-    salePrice: 1590,
-    category: 'Маникюр',
-    image: '/courses/ukreplenie.jpg'
-  },
-  {
-    id: '5',
-    slug: 'sekreti-frencha',
-    title: 'Секреты френча',
-    description: 'Научись рисовать идеальный френч за 20 минут',
-    price: 1390,
-    salePrice: 990,
-    category: 'Дизайн',
-    image: '/courses/french.jpg'
-  },
-  {
-    id: '6',
-    slug: 'narashivanie-na-verhnih-formah',
-    title: 'Моделирование на верхних формах',
-    description: 'Сократи время процедуры наращивания ногтей, работай меньше - зарабатывай больше',
-    price: 1890,
-    salePrice: 1190,
-    category: 'Наращивание',
-    image: '/courses/narashivanie.jpg'
-  },
-  {
-    id: '7',
-    slug: 'aerografiya',
-    title: 'Аэрография',
-    description: 'Самый полный курс по аэрографии на ногтях. Научись выполнять яркие и интересные дизайны без навыков рисования',
-    price: 2990,
-    salePrice: 1990,
-    category: 'Дизайн',
-    image: '/courses/aerografiya.jpg'
-  },
-  {
-    id: '8',
-    slug: 'flower-art',
-    title: 'Flower Art',
-    description: 'Научись флористике гель-лаками и делай роспись фактурной и насыщенной',
-    price: 1590,
-    salePrice: 890,
-    category: 'Дизайн',
-    image: '/courses/flower-art.jpg'
-  },
-  {
-    id: '9',
-    slug: 'plenki',
-    title: 'Пленки',
-    description: 'Научись создавать красивые и яркие дизайны, не тратя на это много времени',
-    price: 890,
-    salePrice: 490,
-    category: 'Дизайн',
-    image: '/courses/plenki.jpg'
-  },
-  {
-    id: '10',
-    slug: 'stemping',
-    title: 'Стемпинг',
-    description: 'Создавай красивые рисунки за 1-3 минуты без особенных техник и навыков рисования',
-    price: 990,
-    salePrice: 590,
-    category: 'Дизайн',
-    image: '/courses/stemping.jpg'
-  },
-  {
-    id: '11',
-    slug: 'geometriya',
-    title: 'Геометрия',
-    description: 'Рисуй геометрию симметрично, быстро и четко',
-    price: 1590,
-    salePrice: 990,
-    category: 'Дизайн',
-    image: '/courses/geometriya.jpg'
-  },
-  {
-    id: '12',
-    slug: 'salonnie-designy',
-    title: 'Салонные дизайны',
-    description: 'Узнай секреты 100% носибельности материалов',
-    price: 1190,
-    salePrice: 790,
-    category: 'Дизайн',
-    image: '/courses/salon-design.jpg'
-  },
-  {
-    id: '13',
-    slug: 'lepka-plastilinom',
-    title: 'Лепка пластилином',
-    description: 'Изучи технику плоскостной лепки и создавай объемный декор на ногтях',
-    price: 1490,
-    salePrice: 890,
-    category: 'Дизайн',
-    image: '/courses/lepka.jpg'
-  },
-  {
-    id: '14',
-    slug: 'nasekomie',
-    title: 'Насекомые',
-    description: 'Научись выстраивать композицию и придавать реалистичность рисунку',
-    price: 1090,
-    salePrice: 690,
-    category: 'Дизайн',
-    image: '/courses/nasekomie.jpg'
-  },
-  {
-    id: '15',
-    slug: 'teksturnie-designy',
-    title: 'Текстурные дизайны',
-    description: 'Создавай красивые и оригинальные текстуры легко и быстро',
-    price: 1090,
-    salePrice: 690,
-    category: 'Дизайн',
-    image: '/courses/tekstura.jpg'
-  },
-  {
-    id: '16',
-    slug: 'kapli',
-    title: 'Капли',
-    description: 'Научись рисовать суперскоростные дизайны, не требующие навыков рисования',
-    price: 699,
-    salePrice: 390,
-    category: 'Дизайн',
-    image: '/courses/kapli.jpg'
-  },
-  {
-    id: '17',
-    slug: 'peyzazhi',
-    title: 'Пейзажи',
-    description: 'Научись рисовать реалистичные, живописные пейзажи',
-    price: 999,
-    salePrice: 590,
-    category: 'Дизайн',
-    image: '/courses/peyzazhi.jpg'
-  },
-  {
-    id: '18',
-    slug: 'tropicheskie-frukty',
-    title: 'Тропические фрукты',
-    description: 'Научись гармонично сочетать пропорции рисунка и делать роспись гель-лаками',
-    price: 1190,
-    salePrice: 690,
-    category: 'Дизайн',
-    image: '/courses/frukty.jpg'
-  },
-  {
-    id: '19',
-    slug: 'gradient',
-    title: 'Градиент',
-    description: 'Создавай красивые и идеально плавные градиенты',
-    price: 790,
-    salePrice: 490,
-    category: 'Дизайн',
-    image: '/courses/gradient.jpg'
-  },
-  {
-    id: '20',
-    slug: 'express-designy',
-    title: '25 экспресс дизайнов',
-    description: 'Научись создавать скоростные, яркие и стильные дизайны',
-    price: 989,
-    salePrice: 490,
-    category: 'Дизайн',
-    image: '/courses/express.jpg'
-  }
-];
-
-const categories = ['Все', 'Маникюр', 'Наращивание', 'Дизайн'];
+interface Course {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  price: number;
+  salePrice: number | null;
+  category: string;
+  image: string | null;
+  rating: number | null;
+  students: number | null;
+}
 
 export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Все');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [filteredCourses, setFilteredCourses] = useState(allCourses);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    let filtered = allCourses;
+    fetchCourses();
+  }, []);
 
-    if (selectedCategory !== 'Все') {
-      filtered = filtered.filter(course => course.category === selectedCategory);
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch('/api/courses');
+      const data = await response.json();
+      if (data.success) {
+        setCourses(data.courses);
+      } else {
+        setError('Ошибка загрузки курсов');
+      }
+    } catch (error) {
+      setError('Ошибка соединения');
+    } finally {
+      setLoading(false);
     }
+  };
 
+  const categories = ['Все', ...new Set(courses.map(c => c.category))];
+
+  const filteredCourses = courses.filter(course => {
+    if (selectedCategory !== 'Все' && course.category !== selectedCategory) {
+      return false;
+    }
     if (searchQuery) {
-      filtered = filtered.filter(course =>
-        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      return course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course.description.toLowerCase().includes(searchQuery.toLowerCase());
     }
+    return true;
+  });
 
-    setFilteredCourses(filtered);
-  }, [searchQuery, selectedCategory]);
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Загрузка курсов...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600">{error}</p>
+          <button onClick={fetchCourses} className="mt-4 text-gold-600 hover:underline">
+            Попробовать снова
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -302,7 +151,7 @@ export default function CoursesPage() {
                 key={course.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.05 }}
               >
                 <CourseCard {...course} />
               </motion.div>
