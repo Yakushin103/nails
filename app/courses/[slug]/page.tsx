@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import VideoComponent from 'next-video';
+import Video from 'next-video';
 import {
   Play,
   Clock,
@@ -14,7 +14,7 @@ import {
   ChevronRight,
   CheckCircle,
   FileText,
-  Video,
+  Video as VideoIcon,
   Download,
   MessageCircle,
   ShoppingCart,
@@ -22,6 +22,7 @@ import {
   Share2
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Reviews from '@/components/Course/Reviews';
 
 // Временные данные (позже из БД)
 const courseData = {
@@ -43,7 +44,7 @@ const courseData = {
   level: 'Для начинающих и опытных',
   language: 'Русский',
   certificate: true,
-  previewVideo: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // Замените на ваше видео
+  previewVideo: '/videos/preview.mp4', // Видео для next-video
   image: '/courses/manicure-1.jpg',
   whatYouWillLearn: [
     'Теория строения ногтей и кутикулы',
@@ -88,10 +89,10 @@ export default function CoursePage() {
               className="relative rounded-2xl overflow-hidden shadow-2xl"
             >
               <div className="aspect-video bg-black">
-                <VideoComponent
+                <Video
                   src={courseData.previewVideo}
-                  controls
-                  className="w-full"
+                  controls={true}
+                  className="w-full h-full"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
                 />
@@ -105,11 +106,11 @@ export default function CoursePage() {
               className="space-y-6"
             >
               <div className="flex items-center gap-3 flex-wrap">
-                <span className="bg-primary-500 px-3 py-1 rounded-full text-sm font-semibold">
+                <span className="bg-gold-500 text-primary-900 px-3 py-1 rounded-full text-sm font-semibold">
                   ТОП курс
                 </span>
                 <div className="flex items-center gap-1">
-                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  <Star className="w-5 h-5 fill-gold-500 text-gold-500" />
                   <span className="font-semibold">{courseData.rating}</span>
                   <span className="text-gray-300">({courseData.students} учеников)</span>
                 </div>
@@ -138,7 +139,7 @@ export default function CoursePage() {
                 <div>
                   {hasDiscount ? (
                     <>
-                      <div className="text-4xl font-bold">
+                      <div className="text-4xl font-bold text-gold-500">
                         {courseData.salePrice?.toLocaleString()} ₽
                       </div>
                       <div className="text-lg text-gray-300 line-through">
@@ -149,7 +150,7 @@ export default function CoursePage() {
                       </div>
                     </>
                   ) : (
-                    <div className="text-4xl font-bold">
+                    <div className="text-4xl font-bold text-gold-500">
                       {courseData.price.toLocaleString()} ₽
                     </div>
                   )}
@@ -199,15 +200,15 @@ export default function CoursePage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-4 px-2 font-semibold transition-colors relative ${activeTab === tab.id
-                  ? 'text-primary-600'
-                  : 'text-gray-600 hover:text-primary-600'
+                    ? 'text-gold-600'
+                    : 'text-gray-600 hover:text-gold-600'
                   }`}
               >
                 {tab.label}
                 {activeTab === tab.id && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gold-500"
                   />
                 )}
               </button>
@@ -252,32 +253,32 @@ export default function CoursePage() {
                   </div>
 
                   {/* Features */}
-                  <div className="bg-gradient-to-r from-primary-50 to-pink-50 rounded-2xl p-6">
+                  <div className="bg-gradient-to-r from-primary-50 to-gold-50 rounded-2xl p-6">
                     <h3 className="text-xl font-bold mb-4">Что входит в курс</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center gap-3">
-                        <Video className="w-6 h-6 text-primary-600" />
+                        <VideoIcon className="w-6 h-6 text-gold-600" />
                         <div>
                           <div className="font-semibold">{courseData.lessons} уроков</div>
                           <div className="text-sm text-gray-600">Видео материалы</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Download className="w-6 h-6 text-primary-600" />
+                        <Download className="w-6 h-6 text-gold-600" />
                         <div>
                           <div className="font-semibold">Доп. материалы</div>
                           <div className="text-sm text-gray-600">PDF, схемы</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <MessageCircle className="w-6 h-6 text-primary-600" />
+                        <MessageCircle className="w-6 h-6 text-gold-600" />
                         <div>
                           <div className="font-semibold">Чат поддержки</div>
                           <div className="text-sm text-gray-600">Обратная связь</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Award className="w-6 h-6 text-primary-600" />
+                        <Award className="w-6 h-6 text-gold-600" />
                         <div>
                           <div className="font-semibold">Сертификат</div>
                           <div className="text-sm text-gray-600">По окончании</div>
@@ -303,7 +304,7 @@ export default function CoursePage() {
                       <div key={i} className="p-6 hover:bg-gray-50 transition-colors">
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-3">
-                            <span className="text-primary-600 font-bold">#{i + 1}</span>
+                            <span className="text-gold-600 font-bold">#{i + 1}</span>
                             <span className="font-semibold">{lesson.title}</span>
                           </div>
                           <div className="text-sm text-gray-500">{lesson.duration}</div>
@@ -313,6 +314,8 @@ export default function CoursePage() {
                   </div>
                 </motion.div>
               )}
+
+              {activeTab === 'reviews' && <Reviews />}
             </div>
 
             {/* Sidebar */}
@@ -321,12 +324,12 @@ export default function CoursePage() {
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h3 className="font-bold mb-4">Преподаватель</h3>
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
-                    АН
+                  <div className="w-16 h-16 bg-gradient-to-br from-gold-500 to-primary-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                    ЮК
                   </div>
                   <div>
-                    <div className="font-semibold">Анна Лесникова</div>
-                    <div className="text-sm text-gray-600">Эксперт по маникюру, стаж 8 лет</div>
+                    <div className="font-semibold">Юлия Калмыкова</div>
+                    <div className="text-sm text-gray-600">Эксперт по маникюру, стаж 10+ лет</div>
                   </div>
                 </div>
               </div>
@@ -340,7 +343,7 @@ export default function CoursePage() {
                     <span className="text-sm">Доступ навсегда</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Video className="w-4 h-4 text-green-500" />
+                    <VideoIcon className="w-4 h-4 text-green-500" />
                     <span className="text-sm">Видеоуроки в HD</span>
                   </div>
                   <div className="flex items-center gap-2">
