@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Montserrat } from 'next/font/google'
-import './globals.css'
 import { ReduxProvider } from '@/store/provider'
+
 import Header from '@/components/Layout/Header'
+import ToastProvider from '@/components/Toast/ToastProvider';
+
+import './globals.css'
 
 const playfair = Playfair_Display({
   subsets: ['latin', 'cyrillic'],
@@ -27,6 +30,8 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${playfair.variable} ${montserrat.variable}`}>
       <body className={montserrat.className}>
+        <ToastProvider />
+
         <ReduxProvider>
           <Header />
           {children}

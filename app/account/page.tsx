@@ -15,6 +15,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 // Временные данные (позже из БД)
 const userStats = {
@@ -49,7 +51,27 @@ const recentCourses = [
 ];
 
 export default function AccountPage() {
+  const router = useRouter();
+
+  const token = useSelector((state: RootState) => state.user.token);
   const user = useSelector((state: RootState) => state.user.user);
+
+  useEffect(() => {
+    if (!token || !user) {
+      router.push('/login');
+    }
+  }, [token, user, router]);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Загрузка...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
